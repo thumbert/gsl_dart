@@ -3,7 +3,7 @@ library test.random_number_distributions_test;
 import 'package:test/test.dart';
 
 import 'dart:ffi';
-import '../gsl_generated_bindings.dart';
+import 'package:gsl_dart/src/gsl_generated_bindings.dart';
 
 void tests(Gsl gsl) {
   group('Random number distributions: ', () {

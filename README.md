@@ -22,14 +22,31 @@ const like = 'sample';
 
 ## Additional information
 
-TODO: Tell users more about the package: where to find more information, how to 
-contribute to the package, how to file issues, what response they can expect 
-from the package authors, and more.
+
+### How to install `gsl` on Ubuntu 22.04
+Download the `gsl-2.7.1.tar.gz` file. 
+
+Gunzip it: `gunzip gsl-2.7.1.tar.gz`
+
+Untar it: `tar -xvf gsl-2.7.1.tar`
+
+Install it: `./configure && make && make install`
+
+GSL libraries get installed in `/usr/local/lib`.  You need the location to load the dynamic library, see `/test`. 
+
+According to the `ffigen` documentation, you need to have LLVM (9+) installed.  You can install it with `sudo apt-get install libclang-dev`.  It gets installed in the `usr/lib/llvm-14` folder. 
+
+### Make `gsl` available in Dart
+Go through the source folders of `gsl-2.7.1` to extract **all** the header files needed for the `ffigen` package to generate the Dart bindings.  For example, get the `gsl-2.7.1/blas/gsl_blas.h`, `gsl-2.7.1/blas/gsl_blas_types.h` files from the `blas` folder, etc.   Put all these header files in the `./third_party` folder.  Boring but needed. 
+
+Check out the `pubspec.yaml` section for the `ffigen`.  Note how it refers to the `./third_party` folder. 
+
+Run ```dart run ffigen``` to generate the bindings.  They are available in `./src/gsl_generated_bindings.dart` as specified in the 
+`pubspec.yaml` file. 
 
 
 
-## Using the ```ffigen``` package to generate the bindings
-### Installation notes Ubuntu 16.04
+### Installation notes for Ubuntu 16.04
 
 Ubuntu 16.04 doesn't have a modern llvm package (it's stuck at 3.8).  I've installed llvm-12 using
 ```
@@ -46,9 +63,6 @@ solved the problem for me
 ln -s libclang.so.1 libclang.so
 ```
 
-Note: I've copied all the header files from ```gsl-2.7.1/gsl/``` into this project's ```third_party/``` folder. 
-
-Run ```dart run ffigen``` to generate the bindings.  They are available in ```./gsl_generated_bindings.dart```. 
 
 
 

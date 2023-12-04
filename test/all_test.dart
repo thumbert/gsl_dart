@@ -1,6 +1,6 @@
 import 'dart:ffi';
-import '../gsl_generated_bindings.dart';
 import 'special_functions_test.dart' as special_functions;
+import 'package:gsl_dart/src/gsl_generated_bindings.dart';
 
 typedef J0Func = Double Function(Double x);
 typedef J0 = double Function(double x);
