@@ -1,12 +1,12 @@
-import 'dart:ffi';
+import 'dart:io';
 import 'dart:math';
 
 import 'package:gsl_dart/gsl_dart.dart';
 import 'package:intl/intl.dart';
 
 void main() {
-  final minimizer = Minimizer(xLower: 0, xUpper: 6, x0: 2);
-  Minimizer.fn = (x, params) => cos(x) + 1.0;
+  final minimizer = Minimizer(
+      fn: (double x) => cos(x) + 1.0, xLower: 0, xUpper: 6, xInitial: 2);
 
   final mExpected = pi;
   final maxIteration = 100;
@@ -21,23 +21,24 @@ void main() {
       '[${minimizer.xLower.toStringAsFixed(7)}, '
       '${minimizer.xUpper.toStringAsFixed(7)}] '
       '${minimizer.minimum.toStringAsFixed(7)} '
-      '${(minimizer.minimum - mExpected).toStringAsFixed(7)} '
+      '${fmt.format(minimizer.minimum - mExpected)} '
       '${(minimizer.xUpper - minimizer.xLower).toStringAsFixed(7)}');
 
   do {
     iter++;
     status = minimizer.iterate();
     status = minimizer.stopTest(epsAbsolute: 0.001, epsRelative: 0.0);
-    if (status == GSL_SUCCESS) {
-      print('Converged:\n');
-    }
     print('${iter.toString().padLeft(5)} '
         '[${minimizer.xLower.toStringAsFixed(7)}, '
         '${minimizer.xUpper.toStringAsFixed(7)}] '
         '${minimizer.minimum.toStringAsFixed(7)} '
-        '${(minimizer.minimum - mExpected).toStringAsFixed(7)} '
-        '${fmt.format(minimizer.xUpper - minimizer.xLower)}');
+        '${fmt.format(minimizer.minimum - mExpected)} '
+        '${(minimizer.xUpper - minimizer.xLower).toStringAsFixed(7)}');
   } while (status == GSL_CONTINUE && iter < maxIteration);
 
   minimizer.free();
+
+  /// I need to force an exit because otherwise the program hangs.
+  /// Probably because I haven't released all C resources properly.
+  exit(0);
 }

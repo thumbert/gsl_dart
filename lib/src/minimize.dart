@@ -1,5 +1,4 @@
 import 'dart:ffi';
-import 'dart:math';
 
 import 'package:ffi/ffi.dart';
 import 'package:gsl_dart/gsl_dart.dart';
@@ -16,15 +15,17 @@ class Minimizer {
   ///
   Minimizer({
     this.algorithm = MinimizeAlgorithm.brent,
-    // required this.fn,
+    required this.fn,
     required num xLower,
     required num xUpper,
-    required this.x0,
+    required this.xInitial,
   }) {
-    // _fn(double x, Pointer<Void> params) => fn(x);
-
-    final Pointer<gsl_function_struct> pFun = calloc<gsl_function_struct>();
-    pFun.ref.function = Pointer.fromFunction(fn, 0.0);
+    pFun = calloc<gsl_function_struct>();
+    pFun.ref.function =
+        NativeCallable<Double Function(Double, Pointer<Void>)>.isolateLocal(
+                (double x, Pointer<Void> parms) => fn(x),
+                exceptionalReturn: 0.0)
+            .nativeFunction;
     pFun.ref.params = Pointer.fromAddress(0);
 
     var type = switch (algorithm) {
@@ -34,22 +35,19 @@ class Minimizer {
     _solver = gsl.gsl_min_fminimizer_alloc(type);
 
     // set the solver
-    gsl.gsl_min_fminimizer_set(
-        _solver, pFun, x0.toDouble(), xLower.toDouble(), xUpper.toDouble());
+    gsl.gsl_min_fminimizer_set(_solver, pFun, xInitial.toDouble(),
+        xLower.toDouble(), xUpper.toDouble());
   }
 
   MinimizeAlgorithm algorithm;
-
-  static late double Function(double, Pointer<Void>) fn;
-  // static double fn(double x, Pointer<Void> params) => cos(x) + 1.0;
-
+  late Pointer<gsl_function_struct> pFun;
   late Pointer<gsl_min_fminimizer> _solver;
 
   /// Function to minimize
-  // double Function(double) fn;
+  double Function(double) fn;
 
   /// Initial guess value for x
-  num x0;
+  num xInitial;
 
   /// Get the lower bound
   double get xLower => gsl.gsl_min_fminimizer_x_lower(_solver);
@@ -67,7 +65,7 @@ class Minimizer {
 
   /// Should free resources when done
   void free() {
-    // calloc.free(pFun);  // maybe this one too?
+    calloc.free(pFun); 
     gsl.gsl_min_fminimizer_free(_solver);
   }
 

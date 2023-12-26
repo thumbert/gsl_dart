@@ -11,7 +11,7 @@ Gsl get gsl {
 }
 
 DynamicLibrary open() {
-  if (_dynLib == null) {
+  if (_gsl == null) {
     if (Platform.isLinux) {
       _dynLib = DynamicLibrary.open('/usr/local/lib/libgsl.so');
     } else {

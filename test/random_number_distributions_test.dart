@@ -36,6 +36,6 @@ void tests(Gsl gsl) {
 }
 
 void main() {
-  final dylib = DynamicLibrary.open('/usr/local/lib/libgsl.so');
-  tests(Gsl(dylib));
+  final dylib0 = DynamicLibrary.open('/usr/local/lib/libgsl.so');
+  tests(Gsl(dylib0));
 }
