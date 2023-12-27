@@ -2,17 +2,13 @@ library test.random_number_distributions_test;
 
 import 'package:test/test.dart';
 
-import 'dart:ffi';
-import 'package:gsl_dart/src/ffi/gsl_generated_bindings.dart';
+import 'package:gsl_dart/gsl_dart.dart';
 
-void tests(Gsl gsl) {
+void tests() {
   group('Random number distributions: ', () {
     /// create a generator chosen by the environment variable
     gsl.gsl_rng_env_setup();
     var rand = gsl.gsl_rng_alloc(gsl.gsl_rng_default);
-    tearDown(() {
-      gsl.gsl_rng_free(rand);
-    });
     test('Poisson distribution', () {
       // See https://www.gnu.org/software/gsl/doc/html/randist.html#examples
       var mu = 3.0;
@@ -36,6 +32,5 @@ void tests(Gsl gsl) {
 }
 
 void main() {
-  final dylib0 = DynamicLibrary.open('/usr/local/lib/libgsl.so');
-  tests(Gsl(dylib0));
+  tests();
 }
