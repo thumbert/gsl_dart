@@ -1,3 +1,7 @@
+## TODO
+- Make an interface to the NLopt library.  https://nlopt.readthedocs.io/en/latest/
+- Make an interface to the GLPK library. https://www.gnu.org/software/glpk/glpk.html
+
 
 
 ## Released 2023-12-26
