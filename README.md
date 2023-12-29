@@ -101,6 +101,8 @@ ldd /usr/local/lib/libgsl.so
 
 ### Make `gsl` available in Dart
 
+As a user, you don't need this step.  It's only needed as a package author.
+
 According to the `ffigen` documentation, you need to have LLVM (9+) installed.  You can install it with `sudo apt-get install libclang-dev`.  It gets installed in the `usr/lib/llvm-14` folder. 
 
 Go through the source folders of `gsl-2.7.1` to extract **all** the header files needed for the `ffigen` package to generate the Dart bindings.  For example, get the `gsl-2.7.1/blas/gsl_blas.h`, `gsl-2.7.1/blas/gsl_blas_types.h` files from the `blas` folder, etc.   Put all these header files in the `./third_party` folder.  Boring but needed. 
@@ -127,13 +129,6 @@ $ ldd eigen
     /lib64/ld-linux-x86-64.so.2 (0x00007f9b5b749000)
 ``` 
 You can find the names of the symbols with `nm /usr/local/lib/libgslcblas.so`.
-
-```dart
-  late final _cblas_dnrm2Ptr = _lookup<
-      ffi.NativeFunction<
-          ffi.Double Function(
-              ffi.Int, ffi.Pointer<ffi.Double>, ffi.Int)>>('cblas_dnrm2');
-```
 
 
 
